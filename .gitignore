@@ -1,3 +1,6 @@
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -143,6 +146,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+jobenv/
 
 # Spyder project settings
 .spyderproject
@@ -205,3 +209,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# media
+media/resumes
