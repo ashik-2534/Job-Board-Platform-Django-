@@ -15,7 +15,7 @@ class Job (models.Model):
     title = models.CharField(max_length=255)
     company = models.CharField(max_length = 255)
     description = models.TextField()
-    locaion = models.CharField(max_length = 150)
+    location = models.CharField(max_length = 150)
     requirements = models.TextField()
     job_type = models.CharField(max_length=2, choices=JOB_TYPES)
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
