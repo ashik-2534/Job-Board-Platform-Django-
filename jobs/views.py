@@ -72,3 +72,13 @@ def apply_job(request, pk):
         'job': job,
     }
     return render ( request , 'jobs/apply_job.html',context )
+
+
+class MyJobListView(LoginRequiredMixin,ListView):
+    model = Job
+    template_name = 'jobs/my_jobs.html'
+    context_object_name = 'jobs'
+    
+    def get_queryset(self):
+        return Job.objects.filter(posted_by = self.request.user).order_by('-date_posted')
+    
