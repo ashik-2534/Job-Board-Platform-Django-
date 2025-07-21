@@ -81,7 +81,7 @@ def apply_job(request, pk):
     return render(request, 'jobs/apply_job.html', context)
 
 # View for listing jobs posted by the current user
-class MyJobListView(LoginRequiredMixin, ListView):
+class MyJobsListView(LoginRequiredMixin, ListView):
     model = Job
     template_name = 'jobs/my_jobs.html'
     context_object_name = 'jobs'
