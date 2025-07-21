@@ -70,14 +70,11 @@ def apply_job(request, pk):
             application.job = job
             application.applicant = request.user
             application.save()
-            messages.success(request, 'Application submitted successfully!')
-            return redirect('job-detail', pk=pk)
+            messages.success(request, "Application submitted!")
+            return redirect('job-detail', pk=job.pk)
     else:
         form = ApplicantForm()
-    context = {
-        'form': form,
-        'job': job,
-    }
+    context = {'form': form, 'job': job}
     return render(request, 'jobs/apply_job.html', context)
 
 # View for listing jobs posted by the current user
