@@ -25,7 +25,7 @@ class JobListView(ListView):
     
 class JobDetailView(DetailView):
     model = Job
-    template_name = 'jobs/job_detail.html'
+    # template_name = 'jobs/job_detail.html'
     
 class JobCreateView(LoginRequiredMixin, CreateView):
     model = Job 
@@ -36,3 +36,39 @@ class JobCreateView(LoginRequiredMixin, CreateView):
         form.instance.posted_by = self.request.user
         return super().form_valid(form)
     
+class JobUpdateView(UpdateView,LoginRequiredMixin, UserPassesTestMixin):
+    model = Job
+    form_class = JobForm
+    
+    def test_func(self):
+        job = self.get_object()
+        return self.request.user == job.posted_by # ensures only the user who posted can delete the job
+
+
+class JobDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
+    model = Job
+    success_url = reverse_lazy('job-lsit')
+    
+    def test_func(self):
+        job = self.get_object()
+        return self.request.user == job.posted_by # ensures only the user who posted can delete the job
+    
+
+def apply_job(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+    if request.method == "POST":
+        form = ApplicantForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.applicant = request.user
+            application.save()
+            messages.success(request, 'Application submitted successfully!')
+            return redirect('job-detail', pk=pk)
+    else:
+        form = ApplicantForm()
+    context = {
+        'form':form, 
+        'job': job,
+    }
+    return render ( request , 'jobs/apply_job.html',context )
