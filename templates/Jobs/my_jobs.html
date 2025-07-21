@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-4">
+    <h2>My Posted Jobs</h2>
+    {% for job in jobs %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h4><a href="{% url 'job-detail' job.pk %}">{{ job.title }}</a> at {{ job.company }}</h4>
+          <p>{{ job.location }} | {{ job.get_job_type_display }}</p>
+          <a href="{% url 'job-update' job.pk %}" class="btn btn-warning btn-sm">Edit</a>
+          <a href="{% url 'job-delete' job.pk %}" class="btn btn-danger btn-sm">Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p>You have not posted any jobs yet.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

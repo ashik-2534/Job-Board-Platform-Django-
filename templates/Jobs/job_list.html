@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-4">
+    <h2>Job Listings</h2>
+    {% for job in object_list %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h4><a href="{% url 'job-detail' job.pk %}">{{ job.title }}</a> at {{ job.company }}</h4>
+          <p>{{ job.location }} | {{ job.get_job_type_display }}</p>
+          <p>Posted: {{ job.date_posted|date:"M d, Y" }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p>No jobs found.</p>
+    {% endfor %}
+    {% if is_paginated %}
+      <div>
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
