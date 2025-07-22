@@ -25,7 +25,7 @@ class Job (models.Model):
     is_active = models.BooleanField(default=True)
     
     def __str__(self):
-        return f'{self.name} at {self.company}'
+        return f'{self.title} at {self.company}'
     
     
 class Application(models.Model):

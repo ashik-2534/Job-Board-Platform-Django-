@@ -33,6 +33,7 @@ class JobCreateView(LoginRequiredMixin, CreateView):
     model = Job
     form_class = JobForm
     template_name = 'jobs/job_form.html'
+    success_url = reverse_lazy('my-jobs')
 
     def form_valid(self, form):
         # Associate the job with the currently logged-in user
