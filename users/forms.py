@@ -28,4 +28,4 @@ class UserUpdateForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image']  # Adjust fields as needed
+        fields = ['image', 'role']  # Adjust fields as needed

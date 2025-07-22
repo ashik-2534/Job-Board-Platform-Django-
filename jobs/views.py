@@ -38,11 +38,6 @@ class JobCreateView(LoginRequiredMixin, CreateView):
     template_name = "jobs/job_form.html"
     success_url = reverse_lazy("my-jobs")
 
-    def form_valid(self, form):
-        # Associate the job with the currently logged-in user
-        form.instance.posted_by = self.request.user
-        return super().form_valid(form)
-
     def dispatch(self, request, *args, **kwargs):
         if (
             not hasattr(request.user, "profile")
@@ -50,6 +45,11 @@ class JobCreateView(LoginRequiredMixin, CreateView):
         ):
             messages.error(request, "Only companies can post jobs.")
         return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        # Associate the job with the currently logged-in user
+        form.instance.posted_by = self.request.user
+        return super().form_valid(form)
 
 
 # View for updating a job, requires login and ownership
