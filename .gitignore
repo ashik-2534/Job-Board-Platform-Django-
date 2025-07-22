@@ -211,5 +211,4 @@ marimo/_lsp/
 __marimo__/
 
 
-# media
-media/resumes
+*.jpg

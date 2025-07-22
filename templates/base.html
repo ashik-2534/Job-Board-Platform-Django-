@@ -12,51 +12,7 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'job-list' %}">JobBoard</a>
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'job-list' %}">Jobs</a>
-            </li>
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'my-jobs' %}">My Jobs</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'job-create' %}">Post a Job</a>
-              </li>
-            {% endif %}
-          </ul>
-          <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'profile' %}">
-                  <i class="bi bi-person-circle"></i> {{ user.username }}
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'register' %}">Register</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+{% include 'navbar.html' %}
     <div class="container mt-4">
       {% if messages %}
         {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
