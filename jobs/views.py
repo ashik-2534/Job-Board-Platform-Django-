@@ -44,6 +44,7 @@ class JobCreateView(LoginRequiredMixin, CreateView):
             or request.user.profile.role != "company"
         ):
             messages.error(request, "Only companies can post jobs.")
+            return render(request, "jobs/denied.html")
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
