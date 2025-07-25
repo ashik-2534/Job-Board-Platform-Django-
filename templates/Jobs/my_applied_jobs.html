@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">My Applied Jobs</h2>
+        </div>
+        {% if messages %}
+            <ul class="list-unstyled">
+                {% for message in messages %}
+                    <li class="alert {% if message.tags %} alert-{{ message.tags }} {% else %} alert-info {% endif %}"
+                        role="alert">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% for job in applied_jobs %}
+            {# Use applied_jobs here #}
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <div class="flex-grow-1 mb-3 mb-md-0">
+                            <h5 class="card-title mb-1">
+                                <a href="{% url 'job-detail' job.pk %}" class="text-decoration-none">{{ job.title }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted fw-normal">{{ job.company }}</h6>
+                            <p class="card-text text-muted small mb-0">
+                                <i class="bi bi-geo-alt-fill"></i> {{ job.location }}
+                                <span class="mx-2">&bull;</span>
+                                <i class="bi bi-clock-fill"></i> {{ job.get_job_type_display }}
+                                <span class="mx-2">&bull;</span>
+                                <i class="bi bi-calendar-check-fill"></i> Applied:
+                                {% if job.application_set.first %}
+                                    {{ job.application_set.filter(applicant=request.user).first.date_applied|date:'M. 
+                                    d, Y' }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                {# Above line assumes Job has
+            reverse relation to Application. You might need to adjust this
+            depending on how you structure Application model retrieval. #}
+                            </p>
+                        </div>
+                        {# No edit/delete options for applied jobs, but maybe a "View
+        Application" or "Withdraw Application" button #}
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'job-detail' job.pk %}"
+                               class="btn btn-outline-info btn-sm me-2"><i class="bi bi-eye me-1"></i>View Job</a>
+                            {# Example for withdrawing application - assuming you have a URL/view
+for it #} {#
+          <a href="{% url 'withdraw-application' job.pk %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-x-circle me-1"></i>Withdraw Application
+          </a>
+          #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="text-center p-5 bg-light rounded border">
+                <h3 class="fw-light">No Jobs Applied Yet</h3>
+                <p class="lead text-muted">It looks like you haven't applied to any jobs. Explore opportunities now!</p>
+                <a href="{% url 'job-list' %}" class="btn btn-primary btn-lg mt-3"><i class="bi bi-search me-2"></i>Browse All Jobs</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
