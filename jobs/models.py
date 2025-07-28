@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 
@@ -27,6 +28,10 @@ class Job (models.Model):
     def __str__(self):
         return f'{self.title} at {self.company}'
     
+    def get_absolute_url(self):
+        return reverse("job-detail", kwargs={"pk": self.pk})
+
+    
     
 class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
@@ -40,6 +45,10 @@ class Application(models.Model):
     
     def __str__(self):
         return f"Application for {self.job.title} by {self.applicant.username}"
+    
+    class Meta:
+        unique_together = ('job', 'applicant')
+
     
     
     
