@@ -23,14 +23,22 @@
         </li>
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link px-3 {% if request.resolver_match.url_name == 'my-jobs' %}active{% endif %}"
-               {% if request.resolver_match.url_name == 'my-jobs' %}aria-current="page"{% endif %}
-               href="{% url 'my-jobs' %}">My Jobs</a>
+            <a class="nav-link px-3 {% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}"
+               {% if 'dashboard' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+               href="{% url 'dashboard' %}">
+              <i class="bi bi-speedometer2 me-1"></i>Dashboard
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 {% if request.resolver_match.url_name == 'job-create' %}active{% endif %}"
-               {% if request.resolver_match.url_name == 'job-create' %}aria-current="page"{% endif %}
-               href="{% url 'job-create' %}">Post a Job</a>
+            {% if user.is_authenticated and user.profile.role == 'applicant' %}
+              <a class="nav-link px-3 {% if request.resolver_match.url_name == 'my-applied-jobs' %}active{% endif %}"
+                 {% if request.resolver_match.url_name == 'my-applied-jobs' %}aria-current="page"{% endif %}
+                 href="{% url 'my-applied-jobs' %}">My Applications</a>
+            {% elif user.is_authenticated and user.profile.role == 'company' %}
+              <a class="nav-link px-3 {% if request.resolver_match.url_name == 'my-posted-jobs' %}active{% endif %}"
+                 {% if request.resolver_match.url_name == 'my-posted-jobs' %}aria-current="page"{% endif %}
+                 href="{% url 'my-posted-jobs' %}">My Posted Jobs</a>
+            {% endif %}
           </li>
         {% endif %}
       </ul>
@@ -43,13 +51,26 @@
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
-              <i class="bi bi-person-circle fs-4 me-1 text-warning"></i> <span class="fw-semibold">{{ user.username }}</span>
+              <i class="bi bi-person-circle fs-4 me-1 text-warning"></i>
+              <span class="fw-semibold">{{ user.username }}</span>
+              {% if user.profile.role %}
+                <span class="badge bg-warning text-dark ms-2 small">{{ user.profile.get_role_display }}</span>
+              {% endif %}
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow rounded mt-2"
                 aria-labelledby="navbarDropdown">
               <li>
-                <a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Profile</a>
+                <a class="dropdown-item" href="{% url 'profile' %}">
+                  <i class="bi bi-person me-2"></i>Profile
+                </a>
               </li>
+              {% if user.profile.role == 'company' %}
+                <li>
+                  <a class="dropdown-item" href="{% url 'job-create' %}">
+                    <i class="bi bi-plus-circle me-2"></i>Post Job
+                  </a>
+                </li>
+              {% endif %}
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -65,10 +86,14 @@
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="btn btn-outline-warning me-2 px-4" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+            <a class="btn btn-outline-warning me-2 px-4" href="{% url 'login' %}">
+              <i class="bi bi-box-arrow-in-right me-1"></i>Login
+            </a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-warning px-4" href="{% url 'register' %}"><i class="bi bi-person-plus me-1"></i>Register</a>
+            <a class="btn btn-warning px-4" href="{% url 'register' %}">
+              <i class="bi bi-person-plus me-1"></i>Register
+            </a>
           </li>
         {% endif %}
       </ul>
@@ -119,5 +144,11 @@
   .dropdown-menu .dropdown-item:focus {
     background-color: rgba(255, 193, 7, 0.1);
     color: #232526;
+  }
+
+  /* Role badge styling */
+  .badge.bg-warning.text-dark {
+    font-size: 0.7rem;
+    font-weight: 500;
   }
 </style>
