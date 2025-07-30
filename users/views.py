@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import Profile
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -11,49 +11,61 @@ from django.utils import timezone
 from datetime import timedelta
 from jobs.models import Job, Application
 
-
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-        
-            user = form.save()
-            role = form.cleaned_data.get('role')
-            user.profile.role = role
-            user.profile.save()
+            form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
+            messages.success(request, f'Account created for {username}! You can now log in.')
             return redirect('login')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
-        
-        
+
 
 @login_required
-def profile(request):
+def profile_view(request, username=None):
+    """Display user profile - can view own or others' profiles"""
+    if username:
+        user = get_object_or_404(User, username=username)
+    else:
+        user = request.user
+    
+    # Get or create profile if it doesn't exist
+    profile, created = Profile.objects.get_or_create(user=user)
+    
+    context = {
+        'profile_user': user,
+        'profile': profile,
+        'is_own_profile': user == request.user
+    }
+    
+    return render(request, 'users/profile_show.html', context)
+
+
+@login_required
+def profile_edit(request):
+    """Edit current user's profile"""
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(
-            request.POST, 
-            request.FILES, 
-            instance=request.user.profile
-        )
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, 'Your profile has been updated!')
-            return redirect('profile')
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile-show')
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
-
+    
     context = {
         'u_form': u_form,
         'p_form': p_form
     }
-    return render(request, 'users/profile.html', context)
-
+    
+    return render(request, 'users/profile_edit.html', context)
 
 @login_required
 def dashboard_view(request):
