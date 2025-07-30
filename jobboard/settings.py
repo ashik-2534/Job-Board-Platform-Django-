@@ -31,18 +31,26 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jobs.apps.JobsConfig',  # job app 
-    'users.apps.UsersConfig', # user app 
-    'crispy_forms', #for crispy forms
-    'crispy_bootstrap5', # for bootstrap 5 styling
 ]
+
+CUSTOM_APPS = [
+    'jobs.apps.JobsConfig',  # job app 
+    'users.apps.UsersConfig', # user app
+]
+
+THIRD_PARTY_APPS = [
+    'crispy_forms', #for crispy forms
+    'crispy_bootstrap5' # for bootstrap 5 styling
+]
+
+INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
