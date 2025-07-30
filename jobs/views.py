@@ -64,7 +64,7 @@ class JobUpdateView(
 ):
     model = Job
     form_class = JobForm
-    success_url = reverse_lazy("my-jobs")
+    # success_url = reverse_lazy("my-jobs")
 
     def test_func(self):
         # Ensure that the current user is the one who posted the job
