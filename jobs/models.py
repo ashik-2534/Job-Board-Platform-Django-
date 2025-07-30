@@ -39,7 +39,7 @@ class Application(models.Model):
     full_name = models.CharField(max_length = 255)
     email = models.EmailField()
     portfolio = models.URLField(max_length = 200)
-    resume = models.FileField(upload_to='resumes/')
+    resume = models.FileField(upload_to='resumes/' , default='sample_resume.pdf')
     cover_letter = models.TextField()
     date_applied = models.DateTimeField(auto_now_add=True)
     
