@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="text-center p-5 bg-light rounded border">
+        <h3 class="fw-light">Access Denied!</h3>
+        {# Display any messages from the Django messages framework #}
+        {% if messages %}
+            <ul class="list-unstyled">
+                {% for message in messages %}
+                    {# The 'message.tags' can be used for styling, e.g., 'error', 'success', 'info' #}
+                    <li class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-danger{% endif %}"
+                        role="alert">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p class="lead text-muted">It looks like you don't have the necessary permissions to access this page.</p>
+        <a href="{% url 'job-list' %}" class="btn btn-primary btn-lg mt-3">
+            <i class="bi bi-house-door me-2"></i>Go to Home
+        </a>
+    </div>
+{% endblock content %}

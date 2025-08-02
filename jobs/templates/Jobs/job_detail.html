@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-4">
+    <h2>{{ object.title }} at {{ object.company }}</h2>
+    <p><strong>Location:</strong> {{ object.location }}</p>
+    <p><strong>Type:</strong> {{ object.get_job_type_display }}</p>
+    <p><strong>Description:</strong> {{ object.description }}</p>
+    <p><strong>Requirements:</strong> {{ object.requirements }}</p>
+    <p><strong>Salary:</strong> {{ object.salary }}</p>
+    <p><strong>Posted:</strong> {{ object.date_posted|date:"M d, Y" }}</p>
+    <a href="{% url 'apply-job' object.pk %}" class="btn btn-primary">Apply Now</a>
+    {% if user == object.posted_by %}
+      <a href="{% url 'job-update' object.pk %}" class="btn btn-warning">Edit</a>
+      <a href="{% url 'job-delete' object.pk %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </div>
+{% endblock %}

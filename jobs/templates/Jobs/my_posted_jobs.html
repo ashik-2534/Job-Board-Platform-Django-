@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container my-5">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4">
+      <h2 class="fw-bold mb-3 mb-sm-0">My Posted Jobs</h2>
+      <a href="{% url 'job-create' %}" class="btn btn-primary"><i class="fas fa-plus-circle me-2"></i>Post a New Job</a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    {% for job in object_list %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-body p-4">
+          <div class="d-flex flex-column flex-md-row">
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-1">{{ job.title }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted fw-normal">{{ job.company }}</h6>
+              <div class="d-flex flex-wrap gap-3 text-secondary small mt-3">
+                <span>
+                  {% if job.is_active %}
+                    <i class="fas fa-circle text-success me-1"></i> Active
+                  {% else %}
+                    <i class="fas fa-circle text-danger me-1"></i> Closed
+                  {% endif %}
+                </span>
+                <span>
+                  {% comment %}Assumes you use .annotate() in your view for efficiency{% endcomment %}
+                  <i class="fas fa-users me-1"></i>
+                  {{ job.application_count }} Application{{ job.application_count|pluralize }}
+                </span>
+                <span><i class="fas fa-calendar-alt me-1"></i> Posted: {{ job.date_posted|date:'d M, Y' }}</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center mt-3 mt-md-0 ms-md-3">
+              {% comment %}Add a URL 'job-applicants' to view all applicants for a job{% endcomment %}
+              <a href="#" class="btn btn-dark btn-sm me-2"><i class="fas fa-users me-1"></i>View Applicants</a>
+              <a href="{% url 'job-update' job.pk %}" class="btn btn-outline-secondary btn-sm me-2"><i class="fas fa-edit me-1"></i>Edit</a>
+              <a href="{% url 'job-delete' job.pk %}" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="text-center p-5 bg-light rounded border">
+        <h3 class="fw-light">You Haven't Posted Any Jobs Yet</h3>
+        <p class="lead text-muted">Your posted jobs will appear here. Get started by posting a new one!</p>
+        <a href="{% url 'job-create' %}" class="btn btn-primary mt-3"><i class="fas fa-plus-circle me-2"></i>Post Your First Job</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
