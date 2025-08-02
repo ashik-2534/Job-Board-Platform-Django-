@@ -1,4 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow mb-4 navbar-custom-gradient">
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet" href="{% static 'navbar/navbar.css' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark shadow mb-4 navbar-custom-gradient">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center fw-bold fs-4"
        href="{% url 'job-list' %}">
@@ -42,7 +48,18 @@
           </li>
         {% endif %}
       </ul>
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item">
+          <a class="nav-link px-3 ai-assistant-nav-btn"
+             href="#" {% comment %} Replace # with `{% url 'assistant:chat' %}` when ready {% endcomment %}
+             title="AI Assistant">
+            <i class="fas fa-robot me-1"></i>
+            <span class="d-lg-inline">AI Assistant</span>
+            <span class="ai-notification-badge"
+                  id="nav-ai-notification"
+                  style="display: none;"></span>
+          </a>
+        </li>
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white d-flex align-items-center"
@@ -100,55 +117,6 @@
     </div>
   </div>
 </nav>
-<style>
-  /* Custom class for the navbar gradient background */
-  .navbar-custom-gradient {
-    background: linear-gradient(90deg, #232526 0%, #414345 100%);
-  }
-
-  /*
-   Increased selector specificity (e.g., .navbar-dark .navbar-nav .nav-link)
-   to override Bootstrap styles without using '!important'.
-  */
-  .navbar-dark .navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.85);
-    transition: color 0.2s, background-color 0.2s;
-    border-radius: 0.5rem;
-  }
-
-  /* Hover and active states for nav links */
-  .navbar-dark .navbar-nav .nav-link:hover {
-    color: #fff;
-    background: rgba(255, 193, 7, 0.1);
-  }
-
-  .navbar-dark .navbar-nav .nav-link.active {
-    color: #ffc107;
-    background: rgba(255, 193, 7, 0.15);
-    font-weight: 600;
-  }
-
-  /* Dropdown menu styling */
-  .dropdown-menu {
-    border: none;
-    border-radius: 0.5rem;
-  }
-
-  .dropdown-menu .dropdown-item {
-    transition: background-color 0.2s, color 0.2s;
-    padding: 0.5rem 1.25rem;
-  }
-
-  /* Hover/focus state for dropdown items for better consistency */
-  .dropdown-menu .dropdown-item:hover,
-  .dropdown-menu .dropdown-item:focus {
-    background-color: rgba(255, 193, 7, 0.1);
-    color: #232526;
-  }
-
-  /* Role badge styling */
-  .badge.bg-warning.text-dark {
-    font-size: 0.7rem;
-    font-weight: 500;
-  }
-</style>
+  <script src="{% static 'navbar/navbar.js' %}"></script>
+  </body>
+</html>
