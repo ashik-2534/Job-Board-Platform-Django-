@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'default') #secret key form env
-
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') #openai api key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,14 +40,15 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-CUSTOM_APPS = [
-    'jobs.apps.JobsConfig',  # job app 
-    'users.apps.UsersConfig', # user app
-]
-
 THIRD_PARTY_APPS = [
     'crispy_forms', #for crispy forms
     'crispy_bootstrap5' # for bootstrap 5 styling
+]
+
+CUSTOM_APPS = [
+    'jobs.apps.JobsConfig',  # job app 
+    'users.apps.UsersConfig', # user app
+    'assistant.apps.AssistantConfig', # assistant app
 ]
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
