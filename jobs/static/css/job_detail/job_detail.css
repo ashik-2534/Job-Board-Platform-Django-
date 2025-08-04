@@ -1,0 +1,258 @@
+
+/* General Card and Section Styling */
+.job-detail-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.job-detail-card .card-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #0056b3; /* A slightly darker blue for emphasis */
+}
+
+.job-meta p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.job-meta strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.job-section {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.job-section h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #007bff; /* Primary blue for headings */
+    margin-bottom: 15px;
+}
+
+.job-section p {
+    line-height: 1.8;
+    color: #444;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn-warning, .btn-danger {
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Job Detail AI Helper Styles */
+.ai-job-helper-card {
+    border: 1px solid #e3f2fd;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.08);
+}
+
+.ai-helper-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.ai-helper-content.collapsed {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+}
+
+.ai-job-analysis {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.ai-job-actions {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.ai-action-btn {
+    text-align: left;
+    font-size: 14px; /* Slightly larger for better readability */
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.ai-action-btn:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+.ai-mini-chat {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border-top: 2px solid #007bff;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-messages-mini {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.mini-message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    line-height: 1.4;
+    animation: fadeInUp 0.3s ease;
+}
+
+.mini-message.user {
+    background: #007bff;
+    color: white;
+    text-align: right;
+    margin-left: 20%;
+    border-bottom-right-radius: 5px;
+}
+
+.mini-message.ai {
+    background: #e9ecef;
+    color: #333;
+    margin-right: 20%;
+    border-bottom-left-radius: 5px;
+}
+
+.job-analysis-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #28a745;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.job-analysis-item:last-child {
+    margin-bottom: 0;
+}
+
+.job-analysis-item h6 {
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.job-analysis-item p {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.match-percentage {
+    display: inline-block;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.skill-tag {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    margin: 2px;
+    border: 1px solid #bbdefb;
+}
+
+.missing-skill-tag {
+    background: #ffebee;
+    color: #d32f2f;
+    border-color: #ffcdd2;
+}
+
+/* Loading animation for analysis */
+.analysis-loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.analysis-loading .spinner-border {
+    margin-right: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .job-detail-card .card-title {
+        font-size: 1.75rem;
+    }
+    .job-meta p {
+        font-size: 1rem;
+    }
+    .job-section h5 {
+        font-size: 1.3rem;
+    }
+    .ai-job-actions {
+        margin-top: 20px;
+    }
+    
+    .ai-action-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+    
+    .ai-mini-chat {
+        margin-top: 15px;
+    }
+}

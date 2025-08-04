@@ -1,7 +1,7 @@
 {% load static %}
 <html>
   <head>
-    <link rel="stylesheet" href="{% static 'navbar/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar/navbar.css' %}">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark shadow mb-4 navbar-custom-gradient">
@@ -49,17 +49,6 @@
         {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-        <li class="nav-item">
-          <a class="nav-link px-3 ai-assistant-nav-btn"
-             href="#" {% comment %} Replace # with `{% url 'assistant:chat' %}` when ready {% endcomment %}
-             title="AI Assistant">
-            <i class="fas fa-robot me-1"></i>
-            <span class="d-lg-inline">AI Assistant</span>
-            <span class="ai-notification-badge"
-                  id="nav-ai-notification"
-                  style="display: none;"></span>
-          </a>
-        </li>
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white d-flex align-items-center"
@@ -117,6 +106,6 @@
     </div>
   </div>
 </nav>
-  <script src="{% static 'navbar/navbar.js' %}"></script>
+  <script src="{% static 'js/navbar/navbar.js' %}"></script>
   </body>
 </html>

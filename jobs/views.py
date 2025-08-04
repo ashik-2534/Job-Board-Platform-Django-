@@ -14,6 +14,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Q
+from django.utils import timezone
 
 
 # View for job listings
@@ -42,7 +43,7 @@ class JobListView(ListView):
 # View for job details
 class JobDetailView(DetailView):
     model = Job
-    # template_name = 'jobs/job_detail.html'
+    template_name = 'jobs/job_detail.html'
 
 
 # View for creating a job, requires login
@@ -96,6 +97,10 @@ def apply_job(request, pk):
     if Application.objects.filter(job=job, applicant=request.user).exists():
         messages.error(request, "You have already applied for this job.")
         return redirect("job-detail", pk=job.pk)
+
+    if not job.is_active or (job.application_deadline and job.application_deadline < timezone.now()):
+        messages.error(request, "This job is no longer accepting applications.")
+        return redirect('job-detail', pk=job.pk)
 
     if request.method == "POST":
         form = ApplicantForm(request.POST, request.FILES)

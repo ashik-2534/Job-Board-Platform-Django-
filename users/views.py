@@ -139,6 +139,8 @@ def employer_dashboard(request):
 
 @login_required
 def jobseeker_dashboard(request):
+
+    
     """
     Dashboard for job seekers/applicants
     """
