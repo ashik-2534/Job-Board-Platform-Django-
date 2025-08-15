@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("{% static 'images/hero-bg.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        min-height: 500px;
+        color: white;
+    }
+
+    .feature-card {
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .stats-section {
+        background-color: #f8f9fa;
+    }
+
+    .category-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cta-buttons .btn {
+        min-width: 150px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">Find Your Dream Job Today</h1>
+        <p class="lead mb-4">Connect with top employers and discover opportunities that match your skills</p>
+        
+        {% if not user.is_authenticated %}
+        <!-- CTA Buttons for non-authenticated users -->
+        <div class="cta-buttons mb-4">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-3">Get Started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Sign In</a>
+        </div>
+        <p class="mb-4">Join thousands of job seekers and employers today!</p>
+        {% endif %}
+        
+        <!-- Search Bar -->
+        <form action="{% url 'job-list' %}" method="get" class="col-md-8 mx-auto">
+            <div class="input-group mb-3">
+                <input type="text" name="search" class="form-control form-control-lg" placeholder="Job title, company, or keywords">
+                <button class="btn btn-primary btn-lg" type="submit">Search Jobs</button>
+            </div>
+        </form>
+        
+        {% if user.is_authenticated %}
+        <!-- Quick actions for authenticated users -->
+        <div class="mt-3">
+            {% if user.profile.is_company %}
+                <a href="{% url 'job-create' %}" class="btn btn-success btn-lg">Post a Job</a>
+            {% else %}
+                <a href="{% url 'job-list' %}" class="btn btn-success btn-lg">Browse All Jobs</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5 mb-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <h2 class="display-4 text-primary">{{ total_jobs }}</h2>
+                <p class="lead">Active Jobs</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h2 class="display-4 text-primary">{{ total_companies }}</h2>
+                <p class="lead">Companies</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h2 class="display-4 text-primary">{{ total_applicants }}</h2>
+                <p class="lead">Job Seekers</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="container mb-5">
+    <h2 class="text-center mb-4">Popular Job Categories</h2>
+    <div class="row">
+        {% for type in job_types %}
+        <div class="col-md-3 mb-4">
+            <div class="category-card card h-100">
+                <div class="card-body text-center">
+                    <i class="fas {{ type.icon }} fa-2x text-primary mb-3"></i>
+                    <h5 class="card-title">{{ type.name }}</h5>
+                    <p class="card-text text-muted">{{ type.count }} jobs</p>
+                    <a href="{% url 'job-list' %}?type={{ type.code }}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container mb-5">
+    <h2 class="text-center mb-4">Why Choose Us</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="feature-card card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                    <h4>AI-Powered Assistant</h4>
+                    <p>Get personalized job recommendations and career guidance from our AI assistant</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h4>Verified Employers</h4>
+                    <p>All companies are verified to ensure legitimate job opportunities</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-bolt fa-3x text-primary mb-3"></i>
+                    <h4>Quick Apply</h4>
+                    <p>Easy application process with resume tracking and status updates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if not user.is_authenticated %}
+<!-- CTA Section for non-authenticated users -->
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Take the Next Step in Your Career?</h2>
+        <p class="lead mb-4">Join our platform today and connect with opportunities</p>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-3">
+                <div class="card bg-white text-dark h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">For Job Seekers</h4>
+                        <p class="card-text">Find and apply to jobs that match your skills</p>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Register as Job Seeker</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-white text-dark h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">For Employers</h4>
+                        <p class="card-text">Post jobs and find the perfect candidates</p>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Register as Employer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
