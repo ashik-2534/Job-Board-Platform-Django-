@@ -48,7 +48,7 @@ THIRD_PARTY_APPS = [
 CUSTOM_APPS = [
     'jobs.apps.JobsConfig',  # job app 
     'users.apps.UsersConfig', # user app
-    'assistant.apps.AssistantConfig', # assistant app
+    'home.apps.HomeConfig', # home app
 ]
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
