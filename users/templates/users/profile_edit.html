@@ -1,206 +1,185 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container mt-4">
+  <div class="container mt-4">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>
-                    <i class="fas fa-user-edit"></i> Edit Profile
-                </h2>
-                <a href="{% url 'profile-show' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Profile
-                </a>
-            </div>
-            
-            <!-- Current Profile Preview -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">
-                        <i class="fas fa-eye"></i> Current Profile
-                    </h6>
-                </div>
-                <div class="card-body py-3">
-                    <div class="row align-items-center">
-                        <div class="col-md-2">
-                            <img src="{{ user.profile.image.url }}" 
-                                 alt="Current profile picture" 
-                                 class="img-fluid rounded-circle"
-                                 style="width: 60px; height: 60px; object-fit: cover;">
-                        </div>
-                        <div class="col-md-10">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <small class="text-muted">Username:</small>
-                                    <div>{{ user.username }}</div>
-                                </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted">Email:</small>
-                                    <div>{{ user.email }}</div>
-                                </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted">Role:</small>
-                                    <div>
-                                        <span class="badge badge-{{ profile.role|yesno:"primary,success" }} px-3 py-2">
-    {{ profile.get_role_display }}
-</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Edit Form -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-edit"></i> Update Your Information
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <!-- User Information Section -->
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">
-                                <i class="fas fa-user"></i> Account Information
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        {{ u_form.username|as_crispy_field }}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        {{ u_form.email|as_crispy_field }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Profile Information Section -->
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">
-                                <i class="fas fa-id-card"></i> Profile Information
-                            </h6>
-                            
-                            <!-- Profile Image -->
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Current Profile Picture:</label>
-                                    <div class="text-center">
-                                        <img src="{{ user.profile.image.url }}" 
-                                             alt="Current profile picture" 
-                                             class="img-fluid rounded-circle mb-2"
-                                             style="width: 120px; height: 120px; object-fit: cover;">
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        {{ p_form.image|as_crispy_field }}
-                                        <small class="form-text text-muted">
-                                            Choose a new image to update your profile picture. 
-                                            Recommended size: 400x400 pixels or larger.
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Role Selection -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        {{ p_form.role|as_crispy_field }}
-                                        <small class="form-text text-muted">
-                                            <strong>Company:</strong> Post jobs and hire candidates<br>
-                                            <strong>Applicant:</strong> Apply for jobs and build your career
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-lg px-5">
-                                <i class="fas fa-save"></i> Update Profile
-                            </button>
-                            <a href="{% url 'profile-show' %}" class="btn btn-secondary btn-lg px-5 ml-3">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Help Section -->
-            <div class="card mt-4 border-info">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-info-circle"></i> Profile Tips
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>For Job Seekers:</h6>
-                            <ul class="small">
-                                <li>Use a professional profile picture</li>
-                                <li>Keep your email address up to date</li>
-                                <li>Choose a memorable username</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>For Companies:</h6>
-                            <ul class="small">
-                                <li>Use your company logo as profile picture</li>
-                                <li>Use a professional email address</li>
-                                <li>Make your company name clear in username</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="col-md-8 offset-md-2">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+          <a href="{% url 'profile-show' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Profile</a>
         </div>
-    </div>
-</div>
 
-<!-- Custom CSS -->
-<style>
+        <!-- Current Profile Preview -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-eye"></i> Current Profile</h6>
+          </div>
+          <div class="card-body py-3">
+            <div class="row align-items-center">
+              <div class="col-md-2">
+                <img src="{{ user.profile.image.url }}" alt="Current profile picture" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" />
+              </div>
+              <div class="col-md-10">
+                <div class="row">
+                  <div class="col-md-4">
+                    <small class="text-muted">Username:</small>
+                    <div>{{ user.username }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <small class="text-muted">Email:</small>
+                    <div>{{ user.email }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <small class="text-muted">Role:</small>
+                    <div>
+                      <span class="badge {% if user.profile.is_company %}
+                          badge-primary
+                        {% else %}
+                          badge-success
+                        {% endif %}">
+                        {{ user.profile.get_role_display }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-edit"></i> Update Your Information</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <!-- User Information Section -->
+              <div class="mb-4">
+                <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-user"></i> Account Information</h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">{{ u_form.username|as_crispy_field }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">{{ u_form.email|as_crispy_field }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profile Information Section -->
+              <div class="mb-4">
+                <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-id-card"></i> Profile Information</h6>
+
+                <!-- Profile Image -->
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Current Profile Picture:</label>
+                    <div class="text-center">
+                      <img src="{{ user.profile.image.url }}" alt="Current profile picture" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      {{ p_form.image|as_crispy_field }}
+                      <small class="form-text text-muted">Choose a new image to update your profile picture. Recommended size: 400x400 pixels or larger.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Note about additional fields -->
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                {% if user.profile.is_company %}
+                  To update company information (name, website, description), please contact support.
+                {% else %}
+                  To update your resume, skills, or education, please contact support.
+                {% endif %}
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5"><i class="fas fa-save"></i> Update Profile</button>
+                <a href="{% url 'profile-show' %}" class="btn btn-secondary btn-lg px-5 ml-3"><i class="fas fa-times"></i> Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-4 border-info">
+          <div class="card-header bg-info text-white">
+            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Profile Tips</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              {% if user.profile.is_company %}
+                <div class="col-md-12">
+                  <h6>For Companies:</h6>
+                  <ul class="small">
+                    <li>Use your company logo as profile picture</li>
+                    <li>Use a professional email address</li>
+                    <li>Keep your company information up to date</li>
+                    <li>A clear company logo helps candidates recognize your brand</li>
+                  </ul>
+                </div>
+              {% else %}
+                <div class="col-md-12">
+                  <h6>For Job Seekers:</h6>
+                  <ul class="small">
+                    <li>Use a professional profile picture</li>
+                    <li>Keep your email address up to date</li>
+                    <li>Choose a professional username</li>
+                    <li>A good profile picture increases your chances of getting noticed</li>
+                  </ul>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom CSS -->
+  <style>
     .card {
-        border: none;
-        border-radius: 15px;
+      border: none;
+      border-radius: 15px;
     }
     
     .form-group label {
-        font-weight: 600;
-        color: #495057;
+      font-weight: 600;
+      color: #495057;
     }
     
     .btn-lg {
-        border-radius: 25px;
-        font-weight: 600;
+      border-radius: 25px;
+      font-weight: 600;
     }
     
     .border-bottom {
-        border-bottom: 2px solid #e9ecef !important;
+      border-bottom: 2px solid #e9ecef !important;
     }
     
     .badge {
-        font-size: 0.85em;
+      font-size: 0.85em;
     }
     
     .bg-info {
-        background-color: #17a2b8 !important;
+      background-color: #17a2b8 !important;
     }
     
     .border-info {
-        border-color: #17a2b8 !important;
+      border-color: #17a2b8 !important;
     }
-</style>
+    
+    .alert-info {
+      border-radius: 10px;
+    }
+  </style>
 {% endblock %}

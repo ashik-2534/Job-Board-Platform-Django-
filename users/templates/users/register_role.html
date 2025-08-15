@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">{{ title }}</h2>
+                    
+                    {% if role == 'company' %}
+                        <p class="text-center text-muted mb-4">Create your company account to start posting jobs</p>
+                    {% else %}
+                        <p class="text-center text-muted mb-4">Create your account to start applying for jobs</p>
+                    {% endif %}
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        {% if role == 'company' %}
+                            <!-- For company registration with sections -->
+                            <h5 class="mb-3">Account Information</h5>
+                            {{ form.username|as_crispy_field }}
+                            {{ form.email|as_crispy_field }}
+                            {{ form.password1|as_crispy_field }}
+                            {{ form.password2|as_crispy_field }}
+                            
+                            <hr class="my-4">
+                            <h5 class="mb-3">Company Information</h5>
+                            {{ form.company_name|as_crispy_field }}
+                            {{ form.company_website|as_crispy_field }}
+                            {{ form.company_description|as_crispy_field }}
+                        {% else %}
+                            <!-- For applicant registration -->
+                            {{ form.username|as_crispy_field }}
+                            {{ form.email|as_crispy_field }}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.last_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            
+                            {{ form.phone|as_crispy_field }}
+                            {{ form.password1|as_crispy_field }}
+                            {{ form.password2|as_crispy_field }}
+                        {% endif %}
+                        
+                        <button type="submit" class="btn btn-primary btn-block btn-lg mt-4">Create Account</button>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                        <p>Want to register as a {% if role == 'company' %}job seeker{% else %}company{% endif %}? 
+                            <a href="{% url 'choose-role' %}">Go back</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

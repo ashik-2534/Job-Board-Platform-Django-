@@ -5,8 +5,8 @@
     <h2>Profile</h2>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ u_form | crispy }}
-      {{ p_form | crispy }}
+      {{ u_form | as_crispy_fields }}
+      {{ p_form | as_crispy_fields }}
       <button type="submit" class="btn btn-success">Update</button>
     </form>
   </div>

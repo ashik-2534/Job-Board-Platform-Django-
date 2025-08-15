@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Choose Your Account Type</h2>
+            <p class="text-center text-muted mb-5">Select whether you want to post jobs or apply for jobs</p>
+            
+            <div class="row">
+                <!-- Company Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center p-5">
+                            <i class="fas fa-building fa-4x text-primary mb-3"></i>
+                            <h3 class="card-title">I'm a Company</h3>
+                            <p class="card-text">Post jobs and find talented candidates for your organization</p>
+                            <ul class="list-unstyled text-left mt-3">
+                                <li><i class="fas fa-check text-success"></i> Post unlimited jobs</li>
+                                <li><i class="fas fa-check text-success"></i> Review applications</li>
+                                <li><i class="fas fa-check text-success"></i> Manage job listings</li>
+                            </ul>
+                            <a href="{% url 'register-company' %}" class="btn btn-primary btn-lg mt-3">Register as Company</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Applicant Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center p-5">
+                            <i class="fas fa-user-tie fa-4x text-success mb-3"></i>
+                            <h3 class="card-title">I'm a Job Seeker</h3>
+                            <p class="card-text">Browse jobs and apply to positions that match your skills</p>
+                            <ul class="list-unstyled text-left mt-3">
+                                <li><i class="fas fa-check text-success"></i> Browse all jobs</li>
+                                <li><i class="fas fa-check text-success"></i> Apply to positions</li>
+                                <li><i class="fas fa-check text-success"></i> Track applications</li>
+                            </ul>
+                            <a href="{% url 'register-applicant' %}" class="btn btn-success btn-lg mt-3">Register as Job Seeker</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-center mt-4">
+                Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
