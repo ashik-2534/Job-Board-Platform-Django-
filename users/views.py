@@ -5,24 +5,68 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import (
+    UserRegisterForm, UserUpdateForm, CompanyProfileUpdateForm, ApplicantProfileUpdateForm,
+    CompanyRegisterForm, ApplicantRegisterForm
+)
 from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import timedelta
 from jobs.models import Job, Application
 
-def register(request):
+def choose_role(request):
+    """Let users choose between company or applicant role"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'role/choose_role.html')
+
+def register_company(request):
+    """Registration view for companies"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = CompanyRegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Company account created for {username}! You can now log in.')
+            return redirect('login')
+    else:
+        form = CompanyRegisterForm()
+    
+    context = {
+        'form': form,
+        'title': 'Company Registration',
+        'role': 'company'
+    }
+    return render(request, 'users/register_role.html', context)
+
+def register_applicant(request):
+    """Registration view for applicants"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        form = ApplicantRegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}! You can now log in.')
             return redirect('login')
     else:
-        form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+        form = ApplicantRegisterForm()
+    
+    context = {
+        'form': form,
+        'title': 'Job Seeker Registration',
+        'role': 'applicant'
+    }
+    return render(request, 'users/register_role.html', context)
 
+def register(request):
+    """Redirect to role selection page"""
+    return redirect('choose-role')
 
 @login_required
 def profile_view(request, username=None):
@@ -43,13 +87,17 @@ def profile_view(request, username=None):
     
     return render(request, 'users/profile_show.html', context)
 
-
 @login_required
 def profile_edit(request):
     """Edit current user's profile"""
+    profile = request.user.profile
+    if profile.is_company:
+        ProfileForm = CompanyProfileUpdateForm
+    else:
+        ProfileForm = ApplicantProfileUpdateForm
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        p_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
@@ -58,7 +106,7 @@ def profile_edit(request):
             return redirect('profile-show')
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
+        p_form = ProfileForm(instance=request.user.profile)
     
     context = {
         'u_form': u_form,
