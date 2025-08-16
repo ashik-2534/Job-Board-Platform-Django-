@@ -1,0 +1,76 @@
+<!-- templates/chatbot/chatbot_widget.html -->
+<!-- Floating Chat Button -->
+<button class="chat-button" id="chatToggle" aria-label="Open AI Assistant">
+    <i class="fas fa-comments"></i>
+</button>
+
+<!-- Chat Widget -->
+<div class="chat-widget" id="chatWidget">
+    <div class="chat-header">
+        <h4>
+            <i class="fas fa-robot me-2"></i>
+            JobBoard Assistant
+        </h4>
+        <button class="chat-close" id="chatClose" aria-label="Close chat">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+            <strong>👋 Hi{% if user.is_authenticated %} {{ user.first_name|default:user.username }}{% endif %}!</strong><br>
+            I'm your JobBoard assistant. I can help you with:
+            <br><br>
+            {% if user.is_authenticated %}
+                {% if user.profile.is_company %}
+                    • Managing your job postings<br>
+                    • Viewing applications<br>
+                    • Company profile optimization<br>
+                    • Understanding our platform features<br>
+                {% else %}
+                    • Finding relevant jobs<br>
+                    • Application tips and guidance<br>
+                    • Profile optimization<br>
+                    • Understanding job requirements<br>
+                {% endif %}
+            {% else %}
+                • Finding and browsing jobs<br>
+                • Understanding our platform<br>
+                • Registration and getting started<br>
+                • General platform questions<br>
+            {% endif %}
+            <br>
+            How can I help you today?
+        </div>
+    </div>
+    
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <div class="chat-input-area">
+        <div class="chat-input-container">
+            <input 
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Type your message..." 
+                maxlength="500"
+                autocomplete="off"
+            >
+            <button class="chat-send" id="chatSend" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <div class="chat-actions mt-2">
+            <button class="btn btn-sm btn-outline-secondary" id="clearChat">
+                <i class="fas fa-trash-alt me-1"></i>
+                Clear Chat
+            </button>
+        </div>
+    </div>
+</div>

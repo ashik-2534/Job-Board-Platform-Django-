@@ -28,15 +28,32 @@ class JobListView(ListView):
     def get_queryset(self):
         queryset = Job.objects.filter(is_active=True).order_by("-date_posted")
 
-        # Get the search query from the URL parameter 'q'
+        # Get search parameters
         query = self.request.GET.get("q")
+        job_type = self.request.GET.get("job_type")
+        industry = self.request.GET.get("industry")
+        experience_level = self.request.GET.get("experience_level")
+        min_salary = self.request.GET.get("min_salary")
+        max_salary = self.request.GET.get("max_salary")
+
+        # Apply filters
         if query:
-            # Filter by title, company, or location containing the query
             queryset = queryset.filter(
                 Q(title__icontains=query)
                 | Q(company__icontains=query)
                 | Q(location__icontains=query)
             )
+        if job_type:
+            queryset = queryset.filter(job_type=job_type)
+        if industry:
+            queryset = queryset.filter(industry=industry)
+        if experience_level:
+            queryset = queryset.filter(experience_level=experience_level)
+        if min_salary:
+            queryset = queryset.filter(min_salary__gte=min_salary)
+        if max_salary:
+            queryset = queryset.filter(max_salary__lte=max_salary)
+
         return queryset
 
 

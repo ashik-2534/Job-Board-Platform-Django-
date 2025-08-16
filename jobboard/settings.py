@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'default') #secret key form env
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') #openai api key
+# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') #openai api key
+HF_API_KEY = os.getenv('HF_API_KEY') #huggingface api key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -49,6 +50,7 @@ CUSTOM_APPS = [
     'jobs.apps.JobsConfig',  # job app 
     'users.apps.UsersConfig', # user app
     'home.apps.HomeConfig', # home app
+    'chatbot.apps.ChatbotConfig', # chatbot app 
 ]
 
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS

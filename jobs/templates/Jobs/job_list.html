@@ -18,6 +18,49 @@
 
     <div class="row">
         <div class="col-md-12">
+            <form method="get" class="search-form mb-4">
+                <div class="row g-3">
+                    <div class="col-md">
+                        <input type="text" name="q" class="form-control" placeholder="Search jobs..." value="{{ request.GET.q }}">
+                    </div>
+                    <div class="col-md">
+                        <select name="job_type" class="form-select">
+                            <option value="">Job Type</option>
+                            <option value="full-time" {% if request.GET.job_type == "full-time" %}selected{% endif %}>Full-Time</option>
+                            <option value="part-time" {% if request.GET.job_type == "part-time" %}selected{% endif %}>Part-Time</option>
+                            <option value="remote" {% if request.GET.job_type == "remote" %}selected{% endif %}>Remote</option>
+                            <option value="contract" {% if request.GET.job_type == "contract" %}selected{% endif %}>Contract</option>
+                        </select>
+                    </div>
+                    <div class="col-md">
+                        <select name="industry" class="form-select">
+                            <option value="">Industry</option>
+                            <option value="tech" {% if request.GET.industry == "tech" %}selected{% endif %}>Technology</option>
+                            <option value="finance" {% if request.GET.industry == "finance" %}selected{% endif %}>Finance</option>
+                            <option value="healthcare" {% if request.GET.industry == "healthcare" %}selected{% endif %}>Healthcare</option>
+                            <option value="education" {% if request.GET.industry == "education" %}selected{% endif %}>Education</option>
+                        </select>
+                    </div>
+                    <div class="col-md">
+                        <select name="experience_level" class="form-select">
+                            <option value="">Experience Level</option>
+                            <option value="entry" {% if request.GET.experience_level == "entry" %}selected{% endif %}>Entry Level</option>
+                            <option value="mid" {% if request.GET.experience_level == "mid" %}selected{% endif %}>Mid Level</option>
+                            <option value="senior" {% if request.GET.experience_level == "senior" %}selected{% endif %}>Senior Level</option>
+                        </select>
+                    </div>
+                    <div class="col-md">
+                        <input type="number" name="min_salary" class="form-control" placeholder="Min Salary" value="{{ request.GET.min_salary }}">
+                    </div>
+                    <div class="col-md">
+                        <input type="number" name="max_salary" class="form-control" placeholder="Max Salary" value="{{ request.GET.max_salary }}">
+                    </div>
+                    <div class="col-md-auto">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+
             {% for job in object_list %}
             <div class="card shadow-sm mb-3">
                 <div class="card-body">

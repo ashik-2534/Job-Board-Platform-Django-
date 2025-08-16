@@ -7,10 +7,24 @@ from django.core.exceptions import ValidationError
 # model to store information for job listing
 class Job(models.Model):
     JOB_TYPES = [
-        ("FT", "Full-time"),
-        ("PT", "Part-time"),
-        ("CN", "Contract"),
-        ("RM", "Remote"),
+        ("full-time", "Full-Time"),
+        ("part-time", "Part-Time"),
+        ("remote", "Remote"),
+        ("contract", "Contract"),
+    ]
+
+    INDUSTRIES = [
+        ("tech", "Technology"),
+        ("finance", "Finance"),
+        ("healthcare", "Healthcare"),
+        ("education", "Education"),
+        # Add more industries as needed
+    ]
+
+    EXPERIENCE_LEVELS = [
+        ("entry", "Entry Level"),
+        ("mid", "Mid Level"),
+        ("senior", "Senior Level"),
     ]
 
     title = models.CharField(max_length=255)
@@ -18,7 +32,9 @@ class Job(models.Model):
     description = models.TextField()
     location = models.CharField(max_length=150)
     requirements = models.TextField()
-    job_type = models.CharField(max_length=2, choices=JOB_TYPES)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPES, default="full-time")
+    industry = models.CharField(max_length=50, choices=INDUSTRIES, default="tech")
+    experience_level = models.CharField(max_length=20, choices=EXPERIENCE_LEVELS, default="entry")
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
     min_salary = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
@@ -53,7 +69,7 @@ class Application(models.Model):
     email = models.EmailField()
     portfolio = models.URLField(max_length=200, blank=True, null=True)
     resume = models.FileField(
-        upload_to="resumes/", default="sample_resume.pdf", validators=[validate_resume]
+        upload_to="resumes/", default="resumes/sample_resume.pdf", validators=[validate_resume]
     )
     cover_letter = models.TextField()
     date_applied = models.DateTimeField(auto_now_add=True)

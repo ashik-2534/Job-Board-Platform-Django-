@@ -1,185 +1,1038 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
-          <a href="{% url 'profile-show' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Profile</a>
-        </div>
+{% load static %}
 
-        <!-- Current Profile Preview -->
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-light">
-            <h6 class="mb-0"><i class="fas fa-eye"></i> Current Profile</h6>
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+      
+      <!-- Page Header -->
+      <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-user-edit"></i>
+              Edit Profile
+            </h1>
+            <p class="page-subtitle">Update your profile information and settings</p>
           </div>
-          <div class="card-body py-3">
-            <div class="row align-items-center">
-              <div class="col-md-2">
-                <img src="{{ user.profile.image.url }}" alt="Current profile picture" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" />
-              </div>
-              <div class="col-md-10">
-                <div class="row">
-                  <div class="col-md-4">
-                    <small class="text-muted">Username:</small>
-                    <div>{{ user.username }}</div>
-                  </div>
-                  <div class="col-md-4">
-                    <small class="text-muted">Email:</small>
-                    <div>{{ user.email }}</div>
-                  </div>
-                  <div class="col-md-4">
-                    <small class="text-muted">Role:</small>
-                    <div>
-                      <span class="badge {% if user.profile.is_company %}
-                          badge-primary
-                        {% else %}
-                          badge-success
-                        {% endif %}">
-                        {{ user.profile.get_role_display }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+          <a href="{% url 'profile-show' %}" class="btn btn-secondary btn-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Current Profile Preview Card -->
+      <div class="preview-card mb-4">
+        <div class="preview-header">
+          <h5><i class="fas fa-eye"></i> Current Profile Overview</h5>
+        </div>
+        <div class="preview-body">
+          <div class="current-profile">
+            <div class="profile-avatar-section">
+              <img src="{{ profile.image.url|default:"{% static 'profile_pics/default.jpg' %}" }}" 
+                   alt="Current profile picture" 
+                   class="current-avatar" />
+              <div class="avatar-info">
+                <h6>{{ user.username }}</h6>
+                <span class="role-indicator {% if user.profile.is_company %}company{% else %}applicant{% endif %}">
+                  {% if user.profile.is_company %}
+                    <i class="fas fa-building"></i>
+                  {% else %}
+                    <i class="fas fa-user-graduate"></i>
+                  {% endif %}
+                  {{ user.profile.get_role_display }}
+                </span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Edit Form -->
-        <div class="card shadow-sm">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-edit"></i> Update Your Information</h5>
-          </div>
-          <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <!-- User Information Section -->
-              <div class="mb-4">
-                <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-user"></i> Account Information</h6>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">{{ u_form.username|as_crispy_field }}</div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">{{ u_form.email|as_crispy_field }}</div>
-                  </div>
-                </div>
+            <div class="profile-details">
+              <div class="detail-item">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value">{{ user.email }}</span>
               </div>
-
-              <!-- Profile Information Section -->
-              <div class="mb-4">
-                <h6 class="border-bottom pb-2 mb-3"><i class="fas fa-id-card"></i> Profile Information</h6>
-
-                <!-- Profile Image -->
-                <div class="row mb-3">
-                  <div class="col-md-4">
-                    <label class="form-label">Current Profile Picture:</label>
-                    <div class="text-center">
-                      <img src="{{ user.profile.image.url }}" alt="Current profile picture" class="img-fluid rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
-                    </div>
-                  </div>
-                  <div class="col-md-8">
-                    <div class="form-group">
-                      {{ p_form.image|as_crispy_field }}
-                      <small class="form-text text-muted">Choose a new image to update your profile picture. Recommended size: 400x400 pixels or larger.</small>
-                    </div>
-                  </div>
-                </div>
+              {% if user.profile.phone %}
+              <div class="detail-item">
+                <span class="detail-label">Phone:</span>
+                <span class="detail-value">{{ user.profile.phone }}</span>
               </div>
-
-              <!-- Note about additional fields -->
-              <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i>
-                {% if user.profile.is_company %}
-                  To update company information (name, website, description), please contact support.
-                {% else %}
-                  To update your resume, skills, or education, please contact support.
-                {% endif %}
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="text-center">
-                <button type="submit" class="btn btn-success btn-lg px-5"><i class="fas fa-save"></i> Update Profile</button>
-                <a href="{% url 'profile-show' %}" class="btn btn-secondary btn-lg px-5 ml-3"><i class="fas fa-times"></i> Cancel</a>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Help Section -->
-        <div class="card mt-4 border-info">
-          <div class="card-header bg-info text-white">
-            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Profile Tips</h6>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              {% if user.profile.is_company %}
-                <div class="col-md-12">
-                  <h6>For Companies:</h6>
-                  <ul class="small">
-                    <li>Use your company logo as profile picture</li>
-                    <li>Use a professional email address</li>
-                    <li>Keep your company information up to date</li>
-                    <li>A clear company logo helps candidates recognize your brand</li>
-                  </ul>
-                </div>
-              {% else %}
-                <div class="col-md-12">
-                  <h6>For Job Seekers:</h6>
-                  <ul class="small">
-                    <li>Use a professional profile picture</li>
-                    <li>Keep your email address up to date</li>
-                    <li>Choose a professional username</li>
-                    <li>A good profile picture increases your chances of getting noticed</li>
-                  </ul>
-                </div>
               {% endif %}
+              <div class="detail-item">
+                <span class="detail-label">Member Since:</span>
+                <span class="detail-value">{{ user.date_joined|date:"F j, Y" }}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Edit Form -->
+      <div class="edit-form-card">
+        <div class="form-header">
+          <h4><i class="fas fa-edit"></i> Update Your Information</h4>
+        </div>
+        
+        <div class="form-body">
+          <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+
+            <!-- Account Information Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <h5><i class="fas fa-user-circle"></i> Account Information</h5>
+                <p>Basic account details that identify you on the platform</p>
+              </div>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="{{ u_form.username.id_for_label }}" class="form-label">
+                    <i class="fas fa-user"></i> Username
+                  </label>
+                  {{ u_form.username }}
+                  {% if u_form.username.help_text %}
+                    <small class="form-help">{{ u_form.username.help_text }}</small>
+                  {% endif %}
+                  {% if u_form.username.errors %}
+                    <div class="form-errors">{{ u_form.username.errors }}</div>
+                  {% endif %}
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ u_form.email.id_for_label }}" class="form-label">
+                    <i class="fas fa-envelope"></i> Email Address
+                  </label>
+                  {{ u_form.email }}
+                  {% if u_form.email.help_text %}
+                    <small class="form-help">{{ u_form.email.help_text }}</small>
+                  {% endif %}
+                  {% if u_form.email.errors %}
+                    <div class="form-errors">{{ u_form.email.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Picture Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <h5><i class="fas fa-camera"></i> Profile Picture</h5>
+                <p>Upload a professional photo to represent yourself</p>
+              </div>
+              
+              <div class="profile-image-section">
+                <div class="current-image-display">
+                  <img src="{{ profile.image.url|default:"{% static 'profile_pics/default.jpg' %}" }}" 
+                       alt="Current profile picture" 
+                       class="current-image-preview" 
+                       id="imagePreview" />
+                  <div class="image-overlay">
+                    <i class="fas fa-camera"></i>
+                    <span>Click to change</span>
+                  </div>
+                </div>
+                
+                <div class="image-upload-section">
+                  <div class="form-group">
+                    <label for="{{ p_form.image.id_for_label }}" class="form-label">
+                      <i class="fas fa-upload"></i> Choose New Image
+                    </label>
+                    {{ p_form.image }}
+                    <small class="form-help">
+                      <i class="fas fa-info-circle"></i>
+                      Recommended: Square image (400x400px or larger), JPG or PNG format, max 5MB
+                    </small>
+                    {% if p_form.image.errors %}
+                      <div class="form-errors">{{ p_form.image.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="form-section">
+              <div class="section-header">
+                <h5><i class="fas fa-address-book"></i> Contact & Bio</h5>
+                <p>Additional information to help others connect with you</p>
+              </div>
+              
+              <div class="form-grid">
+                {% if p_form.phone %}
+                <div class="form-group">
+                  <label for="{{ p_form.phone.id_for_label }}" class="form-label">
+                    <i class="fas fa-phone"></i> Phone Number
+                  </label>
+                  {{ p_form.phone }}
+                  {% if p_form.phone.help_text %}
+                    <small class="form-help">{{ p_form.phone.help_text }}</small>
+                  {% endif %}
+                  {% if p_form.phone.errors %}
+                    <div class="form-errors">{{ p_form.phone.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.bio %}
+                <div class="form-group full-width">
+                  <label for="{{ p_form.bio.id_for_label }}" class="form-label">
+                    <i class="fas fa-user-edit"></i> Bio
+                  </label>
+                  {{ p_form.bio }}
+                  {% if p_form.bio.help_text %}
+                    <small class="form-help">{{ p_form.bio.help_text }}</small>
+                  {% endif %}
+                  {% if p_form.bio.errors %}
+                    <div class="form-errors">{{ p_form.bio.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Role-Specific Information Section -->
+            {% if user.profile.is_company %}
+            <!-- Company Information Section -->
+            <div class="form-section company-section">
+              <div class="section-header">
+                <h5><i class="fas fa-building"></i> Company Information</h5>
+                <p>Showcase your company to attract top talent</p>
+              </div>
+              
+              <div class="form-grid">
+                {% if p_form.company_name %}
+                <div class="form-group">
+                  <label for="{{ p_form.company_name.id_for_label }}" class="form-label">
+                    <i class="fas fa-building"></i> Company Name
+                  </label>
+                  {{ p_form.company_name }}
+                  {% if p_form.company_name.errors %}
+                    <div class="form-errors">{{ p_form.company_name.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.company_website %}
+                <div class="form-group">
+                  <label for="{{ p_form.company_website.id_for_label }}" class="form-label">
+                    <i class="fas fa-globe"></i> Company Website
+                  </label>
+                  {{ p_form.company_website }}
+                  {% if p_form.company_website.errors %}
+                    <div class="form-errors">{{ p_form.company_website.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.company_size %}
+                <div class="form-group">
+                  <label for="{{ p_form.company_size.id_for_label }}" class="form-label">
+                    <i class="fas fa-users"></i> Company Size
+                  </label>
+                  {{ p_form.company_size }}
+                  {% if p_form.company_size.errors %}
+                    <div class="form-errors">{{ p_form.company_size.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.industry %}
+                <div class="form-group">
+                  <label for="{{ p_form.industry.id_for_label }}" class="form-label">
+                    <i class="fas fa-industry"></i> Industry
+                  </label>
+                  {{ p_form.industry }}
+                  {% if p_form.industry.errors %}
+                    <div class="form-errors">{{ p_form.industry.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.company_description %}
+                <div class="form-group full-width">
+                  <label for="{{ p_form.company_description.id_for_label }}" class="form-label">
+                    <i class="fas fa-align-left"></i> Company Description
+                  </label>
+                  {{ p_form.company_description }}
+                  <small class="form-help">Tell potential candidates about your company culture, mission, and what makes you unique</small>
+                  {% if p_form.company_description.errors %}
+                    <div class="form-errors">{{ p_form.company_description.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            
+            {% else %}
+            <!-- Applicant Information Section -->
+            <div class="form-section applicant-section">
+              <div class="section-header">
+                <h5><i class="fas fa-user-tie"></i> Professional Information</h5>
+                <p>Highlight your skills and experience to employers</p>
+              </div>
+              
+              <div class="form-grid">
+                {% if p_form.experience_years %}
+                <div class="form-group">
+                  <label for="{{ p_form.experience_years.id_for_label }}" class="form-label">
+                    <i class="fas fa-briefcase"></i> Years of Experience
+                  </label>
+                  {{ p_form.experience_years }}
+                  {% if p_form.experience_years.errors %}
+                    <div class="form-errors">{{ p_form.experience_years.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.education %}
+                <div class="form-group">
+                  <label for="{{ p_form.education.id_for_label }}" class="form-label">
+                    <i class="fas fa-graduation-cap"></i> Education
+                  </label>
+                  {{ p_form.education }}
+                  <small class="form-help">Include your highest degree, institution, and graduation year</small>
+                  {% if p_form.education.errors %}
+                    <div class="form-errors">{{ p_form.education.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.skills %}
+                <div class="form-group full-width">
+                  <label for="{{ p_form.skills.id_for_label }}" class="form-label">
+                    <i class="fas fa-code"></i> Skills
+                  </label>
+                  {{ p_form.skills }}
+                  <small class="form-help">Separate skills with commas (e.g., Python, JavaScript, Project Management, Communication)</small>
+                  {% if p_form.skills.errors %}
+                    <div class="form-errors">{{ p_form.skills.errors }}</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if p_form.resume %}
+                <div class="form-group full-width">
+                  <div class="file-upload-section">
+                    <label for="{{ p_form.resume.id_for_label }}" class="form-label">
+                      <i class="fas fa-file-pdf"></i> Resume
+                    </label>
+                    
+                    {% if user.profile.resume %}
+                    <div class="current-file">
+                      <div class="file-info">
+                        <i class="fas fa-file-pdf text-danger"></i>
+                        <span>Current resume uploaded</span>
+                        <a href="{{ user.profile.resume.url }}" target="_blank" class="file-view">
+                          <i class="fas fa-external-link-alt"></i> View
+                        </a>
+                      </div>
+                    </div>
+                    {% endif %}
+                    
+                    {{ p_form.resume }}
+                    <small class="form-help">
+                      <i class="fas fa-info-circle"></i>
+                      Upload your latest resume (PDF format recommended, max 10MB)
+                    </small>
+                    {% if p_form.resume.errors %}
+                      <div class="form-errors">{{ p_form.resume.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-save">
+                <i class="fas fa-save"></i>
+                Save Changes
+              </button>
+              <a href="{% url 'profile-show' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancel
+              </a>
+              <button type="button" class="btn btn-info btn-preview" onclick="previewChanges()">
+                <i class="fas fa-eye"></i>
+                Preview Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tips and Guidelines -->
+      <div class="tips-card">
+        <div class="tips-header">
+          <h5><i class="fas fa-lightbulb"></i> Profile Tips & Best Practices</h5>
+        </div>
+        <div class="tips-body">
+          <div class="tips-grid">
+            {% if user.profile.is_company %}
+            <div class="tip-category">
+              <h6><i class="fas fa-building"></i> For Companies</h6>
+              <ul>
+                <li><i class="fas fa-check"></i> Use your company logo as profile picture</li>
+                <li><i class="fas fa-check"></i> Write a compelling company description</li>
+                <li><i class="fas fa-check"></i> Keep contact information current</li>
+                <li><i class="fas fa-check"></i> Highlight your company culture and values</li>
+                <li><i class="fas fa-check"></i> Include your official website URL</li>
+              </ul>
+            </div>
+            {% else %}
+            <div class="tip-category">
+              <h6><i class="fas fa-user-tie"></i> For Job Seekers</h6>
+              <ul>
+                <li><i class="fas fa-check"></i> Use a professional headshot</li>
+                <li><i class="fas fa-check"></i> Keep your resume updated</li>
+                <li><i class="fas fa-check"></i> List relevant skills clearly</li>
+                <li><i class="fas fa-check"></i> Write a concise but informative bio</li>
+                <li><i class="fas fa-check"></i> Include accurate experience information</li>
+              </ul>
+            </div>
+            {% endif %}
+            
+            <div class="tip-category">
+              <h6><i class="fas fa-shield-alt"></i> Privacy & Security</h6>
+              <ul>
+                <li><i class="fas fa-check"></i> Only share information you're comfortable with</li>
+                <li><i class="fas fa-check"></i> Use a professional email address</li>
+                <li><i class="fas fa-check"></i> Keep your profile information current</li>
+                <li><i class="fas fa-check"></i> Review your profile regularly</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
-  <!-- Custom CSS -->
-  <style>
-    .card {
-      border: none;
-      border-radius: 15px;
-    }
-    
-    .form-group label {
-      font-weight: 600;
-      color: #495057;
-    }
-    
-    .btn-lg {
-      border-radius: 25px;
-      font-weight: 600;
-    }
-    
-    .border-bottom {
-      border-bottom: 2px solid #e9ecef !important;
-    }
-    
-    .badge {
-      font-size: 0.85em;
-    }
-    
-    .bg-info {
-      background-color: #17a2b8 !important;
-    }
-    
-    .border-info {
-      border-color: #17a2b8 !important;
-    }
-    
-    .alert-info {
-      border-radius: 10px;
-    }
-  </style>
+<!-- Custom CSS -->
+<style>
+/* Base styles */
+.container-fluid {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+/* Page Header */
+.page-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-title i {
+  color: #667eea;
+}
+
+.page-subtitle {
+  color: #718096;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.btn-back {
+  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Preview Card */
+.preview-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.preview-header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 1.25rem 1.5rem;
+}
+
+.preview-header h5 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+.preview-body {
+  padding: 1.5rem;
+}
+
+.current-profile {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.profile-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.current-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-info h6 {
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.role-indicator {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.role-indicator.company {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.role-indicator.applicant {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+.profile-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  color: #718096;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* Edit Form Card */
+.edit-form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  padding: 1.5rem;
+}
+
+.form-header h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.form-body {
+  padding: 2rem;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.form-section:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+}
+
+.section-header h5 {
+  color: #2d3748;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-header h5 i {
+  color: #667eea;
+}
+
+.section-header p {
+  color: #718096;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-label i {
+  color: #667eea;
+  width: 16px;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+textarea.form-control {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-help {
+  color: #718096;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+
+.form-errors {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Profile Image Section */
+.profile-image-section {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.current-image-display {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.current-image-display:hover {
+  transform: scale(1.05);
+}
+
+.current-image-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #e2e8f0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(102, 126, 234, 0.8);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  gap: 0.5rem;
+}
+
+.current-image-display:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-upload-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* File Upload */
+.file-upload-section .current-file {
+  background: #f7fafc;
+  border: 2px dashed #cbd5e0;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.file-view {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.file-view:hover {
+  color: #764ba2;
+  text-decoration: none;
+  transform: translateX(2px);
+}
+
+/* Section-specific styles */
+.company-section {
+  border-left: 4px solid #667eea;
+  padding-left: 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+  border-radius: 0 10px 10px 0;
+  padding: 1.5rem;
+  margin: 0 -1rem;
+}
+
+.applicant-section {
+  border-left: 4px solid #4facfe;
+  padding-left: 1.5rem;
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.02), rgba(0, 242, 254, 0.02));
+  border-radius: 0 10px 10px 0;
+  padding: 1.5rem;
+  margin: 0 -1rem;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem 0 1rem;
+  border-top: 2px solid #f7fafc;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.form-actions .btn {
+  border-radius: 25px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+  color: white;
+}
+
+.btn-preview {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+}
+
+.btn-preview:hover {
+  background: linear-gradient(135deg, #3182ce, #2c5282);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+  color: white;
+}
+
+.form-actions .btn-secondary {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+.form-actions .btn-secondary:hover {
+  background: #cbd5e0;
+  color: #2d3748;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(160, 174, 192, 0.4);
+}
+
+/* Tips Card */
+.tips-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.tips-header {
+  background: linear-gradient(135deg, #ed8936, #dd6b20);
+  color: white;
+  padding: 1.25rem 1.5rem;
+}
+
+.tips-header h5 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+.tips-body {
+  padding: 1.5rem;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.tip-category h6 {
+  color: #2d3748;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tip-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tip-category li {
+  padding: 0.5rem 0;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.tip-category li i {
+  color: #48bb78;
+  font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-body {
+    padding: 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-image-section {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .current-profile {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .profile-details {
+    justify-content: center;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .page-header {
+    padding: 1.5rem;
+  }
+  
+  .page-header .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .company-section,
+  .applicant-section {
+    margin: 0;
+    border-radius: 10px;
+    border-left: none;
+    border-top: 4px solid #667eea;
+    padding: 1.5rem;
+  }
+  
+  .applicant-section {
+    border-top-color: #4facfe;
+  }
+}
+
+/* Animation for form submission */
+@keyframes saveSuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.form-saving .btn-save {
+  animation: saveSuccess 0.6s ease;
+}
+</style>
+
+<!-- JavaScript for enhanced functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Image preview functionality
+  const imageInput = document.querySelector('input[type="file"][accept*="image"]');
+  const imagePreview = document.getElementById('imagePreview');
+  
+  if (imageInput && imagePreview) {
+    imageInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // Form validation feedback
+  const form = document.querySelector('.profile-form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      const saveBtn = document.querySelector('.btn-save');
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      saveBtn.disabled = true;
+      form.classList.add('form-saving');
+    });
+  }
+});
+
+// Preview changes function
+function previewChanges() {
+  // This would open a modal or new tab showing a preview
+  // Implementation would depend on your specific requirements
+  alert('Preview functionality can be implemented to show how the profile will look with the current changes.');
+}
+</script>
+
 {% endblock %}
