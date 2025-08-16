@@ -6,13 +6,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.core.serializers.json import DjangoJSONEncoder
-
 from .models import ChatSession, ChatMessage
 from jobs.models import Job, Application
 from users.models import Profile
@@ -20,14 +15,16 @@ from users.models import Profile
 
 # Set up OpenAI client
 client = OpenAI(
-    base_url="https://router.huggingface.co/v1",
-    api_key = settings.HF_API_KEY
+    base_url="https://router.huggingface.co/v1", api_key=settings.HF_API_KEY
 )
+
+
 class ChatbotContextBuilder:
     """Build context about the jobboard for the AI chatbot"""
 
     @staticmethod
     def get_platform_context():
+        """Get platform context for the chatbot"""
         return """
         You are JobBoard AI Assistant, a helpful chatbot for a job board platform. Here's what you need to know:
         
@@ -53,6 +50,7 @@ class ChatbotContextBuilder:
 
     @staticmethod
     def get_user_context(user):
+        """Get user context for the chatbot"""
         if not user.is_authenticated:
             return "User is not logged in. They can browse jobs but need to register to apply."
 
@@ -77,6 +75,7 @@ class ChatbotContextBuilder:
 
     @staticmethod
     def get_recent_jobs_context(limit=5):
+        """Get recent job postings context for the chatbot"""
         recent_jobs = Job.objects.filter(is_active=True).order_by("-date_posted")[
             :limit
         ]
@@ -92,7 +91,10 @@ class ChatbotContextBuilder:
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ChatbotAPIView(View):
-    """Main chatbot API endpoint"""
+    """
+    Main chatbot API endpoint.
+    Handles user messages and generates AI responses using OpenAI.
+    """
 
     def post(self, request):
         try:
@@ -142,7 +144,10 @@ class ChatbotAPIView(View):
         )
 
     def _generate_ai_response(self, message, session, user):
-        """Generate AI response using OpenAI"""
+        """
+        Generate AI response using OpenAI.
+        Builds context and recent conversation history before calling the OpenAI API.
+        """
         try:
             # Build context
             context_builder = ChatbotContextBuilder()
@@ -151,20 +156,24 @@ class ChatbotAPIView(View):
             jobs_context = context_builder.get_recent_jobs_context()
 
             # Get recent conversation history
-            recent_messages = session.messages.order_by('-created_at')[:10]
+            recent_messages = session.messages.order_by("-created_at")[:10]
             conversation_history = []
 
             for msg in reversed(recent_messages):
-                if msg.message_type == 'user':
-                    conversation_history.append({"role": "user", "content": msg.content})
-                elif msg.message_type == 'bot':
-                    conversation_history.append({"role": "assistant", "content": msg.content})
+                if msg.message_type == "user":
+                    conversation_history.append(
+                        {"role": "user", "content": msg.content}
+                    )
+                elif msg.message_type == "bot":
+                    conversation_history.append(
+                        {"role": "assistant", "content": msg.content}
+                    )
 
             # Prepare messages for OpenAI
             messages = [
                 {
                     "role": "system",
-                    "content": f"{system_context}\n\nUSER CONTEXT:\n{user_context}\n\nCURRENT JOBS:\n{jobs_context}"
+                    "content": f"{system_context}\n\nUSER CONTEXT:\n{user_context}\n\nCURRENT JOBS:\n{jobs_context}",
                 }
             ]
             messages.extend(conversation_history)
@@ -176,22 +185,24 @@ class ChatbotAPIView(View):
                 input=messages,
                 max_output_tokens=500,
                 # temperature=0.7,
-                store=True
+                store=True,
             )
-            
 
             return response.output_text
 
         except Exception as e:
             if "insufficient_quota" in str(e):
-                    return "Our AI assistant is currently unavailable due to quota limits. Please try again later."
+                return "Our AI assistant is currently unavailable due to quota limits. Please try again later."
 
             return f"I'm sorry, I'm having trouble processing your request right now. Please try again later. Error: {str(e)}"
 
 
 @require_http_methods(["GET"])
 def get_chat_history(request):
-    """Get chat history for a session"""
+    """
+    Get chat history for a session.
+    Requires session_id as a query parameter.
+    """
     session_id = request.GET.get("session_id")
 
     if not session_id:
@@ -231,3 +242,5 @@ def clear_chat_session(request):
         return JsonResponse({"message": "Session cleared"})
     except:
         return JsonResponse({"error": "Failed to clear session"}, status=500)
+
+

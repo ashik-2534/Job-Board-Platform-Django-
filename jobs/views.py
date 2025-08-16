@@ -136,45 +136,6 @@ def apply_job(request, pk):
 
 
 # View for listing jobs posted by the current user
-"""class MyJobsListView(LoginRequiredMixin, ListView):
-    model = Job
-    context_object_name = "jobs"
-
-    def dispatch(self, request, *args, **kwargs):
-
-        if not hasattr(request.user, "profile"):
-            messages.error(
-                request,
-                "Your account does not have a profile. Please complete your profile first.",
-            )
-            return redirect("register")
-
-        if request.user.profile.role == "company":
-            self.context_object_name = "posted_jobs"
-            self.template_name = "jobs/my_posted_jobs.html"
-        elif request.user.profile.role == "applicant":
-            self.context_object_name = "applied_jobs"
-            self.template_name = "jobs/my_applied_jobs.html"
-        else:
-            messages.error(request, "Your role does not permit viewing this page.")
-            return redirect("job-list")
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        # Return jobs posted by the current user, ordered by the date posted
-        if self.request.user.profile.role == "company":
-            return Job.objects.filter(posted_by=self.request.user).order_by(
-                "-date_posted"
-            )
-        elif self.request.user.profile.role == "applicant":
-            return (
-                Job.objects.filter(applications__applicant=self.request.user)
-                .order_by("-applications__date_applied")
-                .distinct()
-            )
-        return Job.objects.none()"""
-
-
 class MyAppliedJobsView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Application
     template_name = "jobs/my_applied_jobs.html"
@@ -216,3 +177,5 @@ class MyPostedJobsView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             .annotate(application_count=Count("applications"))
             .order_by("-date_posted")
         )
+        
+        
