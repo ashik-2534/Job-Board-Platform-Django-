@@ -45,7 +45,7 @@ class ChatbotContextBuilder:
         - Companies can manage posted jobs and view applications
         - Profile management for both user types
         
-        Be helpful, professional, and guide users through the platform features.
+        Be helpful, professional, and guide users through the platform features. And your max_output_token is 500 so try to answer fully. Your responses should be short.
         """
 
     @staticmethod
