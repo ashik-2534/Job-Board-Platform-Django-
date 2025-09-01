@@ -25,9 +25,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default') #secret key form env
 # OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') #openai api key
 HF_API_KEY = os.getenv('HF_API_KEY') #huggingface api key
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pydev2534.pythonanywhere.com']
 
 
 # Application definition
@@ -134,7 +134,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
