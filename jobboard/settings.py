@@ -26,7 +26,7 @@ HF_API_KEY = os.getenv('HF_API_KEY') #huggingface api key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['pydev2534.pythonanywhere.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 
 # Application definition
